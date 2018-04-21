@@ -32,5 +32,49 @@ template<typename T> void join(T &container, const char delimiter, std::string &
     }
 }
 
+template<typename B, typename S> void append_item(B &_base, const S &_st) {
+    if ( _base.data.empty() )
+        _base.data = _st.account;
+    else
+        _base.data.append( get_format_account(_st.account, '@') );
+}
+
+template<typename B, typename S> void remove_item(B &_base, const S &_st) {
+    size_t old_pos = 0;
+    std::string &str = _base.data;
+    const std::string &str_r = _st.account;
+
+    while( !str.empty() ) {
+        auto pos = str.find(str_r, old_pos);
+        if (pos == str.npos)
+            break;
+
+        auto pos_delimiter_front = pos != 0 ? pos - 1 : 0;
+        auto pos_delimiter_back = pos + str_r.length();
+
+        bool is_front = (str.at(pos_delimiter_front) == '@' || pos_delimiter_front == 0);
+        bool is_back = false;
+        if ( pos_delimiter_back >= str.length() )
+            is_back = true;
+        else if ( str.at(pos_delimiter_back) == '@' )
+            is_back = true;
+
+        if ( is_front && is_back ) {
+            str.erase(pos_delimiter_front, str_r.length() + 1);
+            break;
+        }
+
+        old_pos = pos_delimiter_back;
+    }
+}
+
+template<typename B, typename S> void append_post_reccord(B &_base, const S &_st) {
+    const auto &str = std::to_string(_st.uuid_post) + "$" + _st.url + "$" + _st.hash;
+    if ( _base.data.empty() )
+        _base.data = str;
+    else
+        _base.data.append( get_format_account(str, '@') );
+}
+
 }
 }
