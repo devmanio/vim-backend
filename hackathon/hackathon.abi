@@ -1,38 +1,116 @@
 {
-  "types": [{
+  "types": [
+    {
       "new_type_name": "account_name",
       "type": "name"
     }
   ],
-  "structs": [{
+  "structs": [
+    {
       "name": "transfer",
       "base": "",
       "fields": [
-        {"name":"from", "type":"account_name"},
-        {"name":"to", "type":"account_name"},
-        {"name":"amount", "type":"uint64"}
+        {
+          "name": "from",
+          "type": "account_name"
+        },
+        {
+          "name": "to",
+          "type": "account_name"
+        },
+        {
+          "name": "amount",
+          "type": "asset"
+        }
       ]
-    },{
-      "name": "account",
+    },
+    {
+      "name": "vote",
       "base": "",
       "fields": [
-        {"name":"account", "type":"name"},
-        {"name":"balance", "type":"uint64"}
+        {
+          "name": "uuid_post",
+          "type": "uint64"
+        },
+        {
+          "name": "account",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "voterecord",
+      "base": "",
+      "fields": [
+        {
+          "name": "uuid_post",
+          "type": "uint64"
+        },
+        {
+          "name": "data",
+          "type": "string"
+        },
+        {
+          "name": "cost",
+          "type": "float64"
+        }
+      ]
+    },
+    {
+      "name": "post",
+      "base": "",
+      "fields": [
+        {
+          "name": "account",
+          "type": "account_name"
+        },
+        {
+          "name": "uuid_post",
+          "type": "uint64"
+        },
+        {
+          "name": "url",
+          "type": "string"
+        },
+        {
+          "name": "hash",
+          "type": "string"
+        }
+      ]
+    },
+    {
+      "name": "postrecord",
+      "base": "",
+      "fields": [
+        {
+          "name": "account",
+          "type": "account_name"
+        },
+        {
+          "name": "data",
+          "type": "string"
+        }
       ]
     }
   ],
-  "actions": [{
+  "actions": [
+    {
       "name": "transfer",
       "type": "transfer",
       "ricardian_contract": ""
     }
   ],
-  "tables": [{
+  "tables": [
+    {
       "name": "account",
       "type": "account",
       "index_type": "i64",
-      "key_names" : ["account"],
-      "key_types" : ["name"]
+      "key_names": [
+        "account"
+      ],
+      "key_types": [
+        "name"
+      ]
     }
   ],
   "ricardian_clauses": []
