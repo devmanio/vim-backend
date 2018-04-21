@@ -25,6 +25,72 @@
       ]
     },
     {
+      "name": "info",
+      "base": "",
+      "fields": [
+        {
+          "name": "key",
+          "type": "uint8"
+        },
+        {
+          "name": "count_posts",
+          "type": "uint64"
+        },
+        {
+          "name": "count_votes",
+          "type": "uint64"
+        },
+        {
+          "name": "count_accounts",
+          "type": "uint64"
+        },
+        {
+          "name": "released_tokens",
+          "type": "uint64"
+        }
+      ]
+    },
+    {
+      "name": "accinfo",
+      "base": "",
+      "fields": [
+        {
+          "name": "account",
+          "type": "account_name"
+        }
+      ]
+    },
+    {
+      "name": "accbalance",
+      "base": "accinfo",
+      "fields": [
+        {
+          "name": "balance",
+          "type": "asset"
+        }
+      ]
+    },
+    {
+      "name": "hashaccount",
+      "base": "accinfo",
+      "fields": [
+        {
+          "name": "hash",
+          "type": "int64"
+        }
+      ]
+    },
+    {
+      "name": "emission",
+      "base": "",
+      "fields": [
+        {
+          "name": "hash",
+          "type": "int64"
+        }
+      ]
+    },
+    {
       "name": "vote",
       "base": "",
       "fields": [
@@ -54,6 +120,7 @@
           "name": "cost",
           "type": "float64"
         }
+
       ]
     },
     {
@@ -91,27 +158,123 @@
           "type": "string"
         }
       ]
+    },
+    {
+      "name": "init",
+      "base": "",
+      "fields": [
+        {
+          "name": "autoruzation",
+          "type": "uint8"
+        }
+      ]
     }
+
   ],
   "actions": [
     {
       "name": "transfer",
       "type": "transfer",
       "ricardian_contract": ""
+    },
+    {
+      "name": "init",
+      "type": "init",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "addaccount",
+      "type": "accinfo",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "emission",
+      "type": "emission",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "fundaccount",
+      "type": "accbalance",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "fundbaseacc",
+      "type": "hashaccount",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "upvote",
+      "type": "vote",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "downvote",
+      "type": "vote",
+      "ricardian_contract": ""
+    },
+    {
+      "name": "createpost",
+      "type": "post",
+      "ricardian_contract": ""
     }
   ],
   "tables": [
     {
-      "name": "account",
-      "type": "account",
+      "name": "accounts",
+      "type": "accbalance",
       "index_type": "i64",
       "key_names": [
         "account"
       ],
       "key_types": [
-        "name"
+        "account_name"
+      ]
+    },
+    {
+      "name": "emisstable",
+      "type": "accinfo",
+      "index_type": "i64",
+      "key_names": [
+        "account"
+      ],
+      "key_types": [
+        "account_name"
+      ]
+    },
+    {
+      "name": "votetable",
+      "type": "voterecord",
+      "index_type": "i64",
+      "key_names": [
+        "uuid_post"
+      ],
+      "key_types": [
+        "uint64"
+      ]
+    },
+    {
+      "name": "posttable",
+      "type": "postrecord",
+      "index_type": "i64",
+      "key_names": [
+        "account"
+      ],
+      "key_types": [
+        "account_name"
+      ]
+    },
+    {
+      "name": "infotable",
+      "type": "info",
+      "index_type": "i64",
+      "key_names": [
+        "key"
+      ],
+      "key_types": [
+        "uint8"
       ]
     }
   ],
-  "ricardian_clauses": []
+  "clauses": []
 }
+
