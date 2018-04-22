@@ -138,7 +138,7 @@ hackathon_plugin_impl::hackathon_plugin_impl() :
     _hash_counter(0)
 {
     init_plugin();
-//    start_generation(500, 1);
+    start_generation(500, 1);
 }
 
 hackathon_plugin_impl::~hackathon_plugin_impl(){}

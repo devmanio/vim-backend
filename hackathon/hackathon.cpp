@@ -119,8 +119,6 @@ void eosio::hackathon::emission(const eosio::objects::st_emission &m_emission)
     for ( auto it = table_emission.begin(); it != table_emission.end(); ++it ) {
         transfer( st_transfer{_creator, it->account, asset(double_to_i64(per25_one), string_to_symbol(4, "VIM"))} );
     }
-
-    calculation_cost_posts();
 }
 
 void eosio::hackathon::transfer(const eosio::objects::st_transfer &m_transfer)
