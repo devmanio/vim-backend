@@ -38,8 +38,7 @@ class hackathon_plugin_impl {
         void transfer(const std::string& from, const std::string& to, const std::string& amount);
         void fund_account(const std::string& account, const std::string& balance);
         void send_transaction(const uint64_t &m_batch);
-        void start_generation(const uint64_t &period_fund_account, const uint64_t& batch_size_fund_account,
-                              const uint64_t& period_emission, const uint64_t& batch_size_emission);
+        void start_generation(const uint64_t& period_emission, const uint64_t& batch_size_emission);
         void create_post(const std::string& account, const uint64_t& uuid_post, const std::string& url, const std::string& hash);
         void stop_generation();
         void upvote(const uint64_t& id_post, const std::string& account);

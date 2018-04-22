@@ -26,6 +26,9 @@ private:
     void add_account( const st_account_info &m_account );
     void fund_account( const st_account_balance &m_account );
 
+    void emission( const st_emission &m_emission );
+    void transfer( const st_transfer &m_transfer );
+
     void up_vote( const st_vote &m_vote );
     void down_vote( const st_vote &m_vote );
 
@@ -45,6 +48,16 @@ private: //TODO auxiliary methods
 
     bool add_account_in_accounts_table( const account_name &m_account ); // TODO add account in account table
 
+    void inline_transfer( const st_transfer &m_transfer ); //  TODO create transaction transfer
+
+    bool add_balance(const account_name &m_name_account, const asset &m_amount );
+    bool sub_balance(const account_name &m_name_account, const asset &m_amount );
+
+    uint64_t tokens_in_block(st_info &m_info);
+    void update_info(info m_info);
+
+    void calculation_cost_posts();
+
 private:
     account_name _creator;
 };
@@ -55,4 +68,3 @@ typedef eosio::multi_index<N(posttable),  st_post_record>         post_table;
 typedef eosio::multi_index<N(accounts),   st_account_balance> accounts_table;
 typedef eosio::multi_index<N(emisstable), st_account_info>    emission_table;
 }
-

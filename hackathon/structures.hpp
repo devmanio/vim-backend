@@ -70,7 +70,7 @@ struct st_vote_record
 {
     uint64_t uuid_post;
     string data;
-    double cost;
+    asset cost;
 
     uint64_t primary_key() const {
         return uuid_post;
@@ -114,4 +114,3 @@ struct st_init
 
 }
 }
-

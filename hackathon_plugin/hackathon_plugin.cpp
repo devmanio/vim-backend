@@ -105,14 +105,9 @@ void hackathon_plugin::plugin_initialize(const variables_map& options) {
 void hackathon_plugin::plugin_startup() {
     app().get_plugin<http_plugin>().add_api(
     {
-        CALL(hackathon_plgn, _hackathon_plugin_impl, create_account, INVOKE_R_R(_hackathon_plugin_impl, create_account, std::string), 201),
-        CALL(hackathon_plgn, _hackathon_plugin_impl, init_plugin, INVOKE_V_V(_hackathon_plugin_impl, init_plugin), 200),
-        CALL(hackathon_plgn, _hackathon_plugin_impl, start_generation, INVOKE_V_R_R_R_R(_hackathon_plugin_impl,
-             start_generation, uint64_t, uint64_t, uint64_t, uint64_t), 200),
-        CALL(hackathon_plgn, _hackathon_plugin_impl, create_post, INVOKE_V_R_R_R_R(_hackathon_plugin_impl, create_post, std::string, uint64_t, std::string, std::string), 200),
-        CALL(hackathon_plgn, _hackathon_plugin_impl, stop_generation, INVOKE_V_V(_hackathon_plugin_impl, stop_generation), 200),
-        CALL(hackathon_plgn, _hackathon_plugin_impl, transfer, INVOKE_V_R_R_R(_hackathon_plugin_impl, transfer, std::string, std::string, std::string), 200),
-        CALL(hackathon_plgn, _hackathon_plugin_impl, fund_account, INVOKE_V_R_R(_hackathon_plugin_impl, fund_account, std::string, std::string), 200),
+        CALL(hackathon_plgn, _hackathon_plugin_impl, create_account, INVOKE_R_R(_hackathon_plugin_impl, create_account, std::string), 200),
+        CALL(hackathon_plgn, _hackathon_plugin_impl, create_post, INVOKE_V_R_R_R_R(_hackathon_plugin_impl, create_post,
+                    std::string, uint64_t, std::string, std::string), 200),
         CALL(hackathon_plgn, _steepshot_plugin_impl, upvote, INVOKE_V_R_R(_hackathon_plugin_impl, upvote, uint64_t, std::string), 200),
         CALL(hackathon_plgn, _steepshot_plugin_impl, downvote, INVOKE_V_R_R(_hackathon_plugin_impl, downvote, uint64_t, std::string), 200)
     });
@@ -141,7 +136,10 @@ hackathon_plugin_impl::hackathon_plugin_impl() :
     _chain_controller(app().get_plugin<chain_plugin>().chain()),
     _emission_timer(app().get_io_service()),
     _hash_counter(0)
-{}
+{
+    init_plugin();
+//    start_generation(500, 1);
+}
 
 hackathon_plugin_impl::~hackathon_plugin_impl(){}
 
@@ -200,7 +198,7 @@ void hackathon_plugin_impl::send_transaction(const uint64_t &m_batch) {
                     "emission",
                     fc::json::from_string(
                         fc::format_string(
-                            "{\"amount\":\"5.000 VIM\",\"hash\":\"${hash}\"}",
+                            "{\"hash\":\"${hash}\"}",
                             fc::mutable_variant_object()("hash", _hash_counter == 1000 ? _hash_counter = 0 : ++_hash_counter))));
 
         signed_transaction trx;
@@ -380,6 +378,7 @@ eosio::responce_structures::resp_create_account hackathon_plugin_impl::create_ac
         }
 
         ilog("'${name}' account was created successfully.", ("name", m_account_name));
+        ilog(" Password: '${pass}'", ("pass", password_account));
     }
 
 
@@ -388,7 +387,6 @@ eosio::responce_structures::resp_create_account hackathon_plugin_impl::create_ac
     eosio::responce_structures::resp_create_account responce;
     responce.login = m_account_name;
     responce.pass = password_account;
-
     return responce;
 }
 
@@ -409,39 +407,22 @@ void hackathon_plugin_impl::init_plugin()
     _is_init_plugin = true;
 }
 
-void hackathon_plugin_impl::start_generation(const uint64_t &period_fund_account, const uint64_t &batch_size_fund_account,
-                                             const uint64_t &period_emission, const uint64_t &batch_size_emission)
+void hackathon_plugin_impl::start_generation(const uint64_t &period_emission, const uint64_t &batch_size_emission)
 {
     if(_is_running) {
         elog("Generation is running");
         throw fc::exception(fc::invalid_operation_exception_code);
     }
 
-    if(period_fund_account < 1 || period_fund_account > 2500) {
-        elog("Period fund base account value is not in the range from 1 to 2500");
-        throw fc::exception(fc::invalid_operation_exception_code);
-    }
-
-    if(period_emission < 1 || period_emission > 2500) {
+    if(period_emission <= 1 || period_emission > 2500) {
         elog("Period emission value is not in the range from 1 to 2500");
         throw fc::exception(fc::invalid_operation_exception_code);
     }
 
-    if(batch_size_fund_account < 1 || batch_size_fund_account > 250) {
-        elog("Batch fund base account value is not in the range from 1 to 250");
-        throw fc::exception(fc::invalid_operation_exception_code);
-    }
-
-    if(batch_size_emission < 1 || batch_size_emission > 250) {
+    if(batch_size_emission < 0 || batch_size_emission > 250) {
         elog("Batch emission value is not in the range from 1 to 250");
         throw fc::exception(fc::invalid_operation_exception_code);
     }
-
-    if(batch_size_fund_account & 1)
-        throw fc::exception(fc::invalid_operation_exception_code);
-
-    if(batch_size_emission & 1)
-        throw fc::exception(fc::invalid_operation_exception_code);
 
     emission_timer(period_emission, batch_size_emission);
     ilog("Started emission in hackathon plugin; performing ${p} transactions every ${m}ms", ("p", batch_size_emission)("m", period_emission));

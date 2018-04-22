@@ -118,7 +118,7 @@
         },
         {
           "name": "cost",
-          "type": "float64"
+          "type": "asset"
         }
 
       ]
@@ -277,4 +277,3 @@
   ],
   "clauses": []
 }
-

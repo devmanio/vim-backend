@@ -76,5 +76,11 @@ template<typename B, typename S> void append_post_reccord(B &_base, const S &_st
         _base.data.append( get_format_account(str, '@') );
 }
 
+template<typename S> uint64_t count_votes_in_post_reccord(const S &_st) {
+    std::vector<std::string> vector;
+    split(_st.data, '@', vector);
+    return vector.size();
+}
+
 }
 }
